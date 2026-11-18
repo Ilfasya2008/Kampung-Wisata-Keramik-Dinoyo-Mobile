@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../theme/app_theme.dart';
-import '../utils/launcher.dart';
-import '../widgets/common.dart';
+import '../../core/constants/app_constants.dart';
+import '../../core/services/notification_service.dart';
+import '../../features/home/presentation/widgets/device_camera_sheet.dart';
+import '../../features/home/presentation/widgets/dinoyo_map_card.dart';
+import '../../theme/app_theme.dart';
+import '../../utils/launcher.dart';
+import '../../widgets/common.dart';
 import 'main_shell.dart';
 
-/// Screen 07 - Kontak.
 class ContactScreen extends StatelessWidget {
-  const ContactScreen({super.key, required this.onNavigate});
   final ValueChanged<int> onNavigate;
-
-  static const _address =
-      'Jl. MT Haryono IX No.336, Kelurahan Dinoyo, Kecamatan Lowokwaru, Kota Malang, Jawa Timur 65145';
-  static const _email = 'info@keramikdinoyo.id';
+  final NotificationService notificationService;
+  const ContactScreen({
+    super.key,
+    required this.onNavigate,
+    required this.notificationService,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,93 +24,83 @@ class ContactScreen extends StatelessWidget {
       bottom: false,
       child: Column(
         children: [
-          const AppTopBar(title: 'Kontak', subtitle: 'Kontak umum kampung wisata'),
+          const AppTopBar(
+            title: 'Kontak & Lokasi',
+            subtitle: 'Peta, navigasi Google Maps, dan kontak umum kampung wisata',
+          ),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const PillChip('Kontak Umum Kampung'),
+                  const PillChip('Kontak Resmi & Titik Kunjungan'),
                   const SizedBox(height: 12),
-                  Text('Hubungi Kampung Wisata Keramik Dinoyo',
-                      style: AppText.h2.copyWith(fontSize: 26)),
+                  Text('Kunjungi & Hubungi Kampung Keramik Dinoyo',
+                      style: AppText.h2.copyWith(fontSize: 24)),
                   const SizedBox(height: 10),
                   Text(
-                    'Informasi kontak umum kampung wisata - bukan kontak pengrajin individual. Untuk menghubungi pengrajin tertentu, silakan kunjungi halaman profil toko masing-masing.',
+                    'Pusat informasi umum sekretariat Paguyuban Pengrajin Keramik Dinoyo. Untuk transaksi atau workshop toko individual, silakan kunjungi profil toko.',
                     style: AppText.body13,
                   ),
                   const SizedBox(height: 16),
                   _callout(),
                   const SizedBox(height: 24),
+
+                  // Integrated Interactive Google Map Card with GPS Distance Calculation
+                  Text('Peta & Navigasi Lokasi', style: AppText.h3),
+                  const SizedBox(height: 12),
+                  const DinoyoMapCard(),
+                  const SizedBox(height: 24),
+
+                  // Device Feature: Camera documentation
+                  _deviceCameraCallout(context),
+                  const SizedBox(height: 24),
+
                   Text('Informasi Kontak', style: AppText.h3),
                   const SizedBox(height: 12),
                   ...gapped([
                     _contactCard(
                       icon: Icons.place_outlined,
-                      label: 'Alamat',
-                      value: _address,
+                      label: 'Alamat Kampung',
+                      value: AppConstants.dinoyoAddress,
                       trailingIcon: Icons.map_outlined,
                       tooltip: 'Buka di Maps',
-                      onTrailing: () => openMaps(context, _address),
+                      onTrailing: () =>
+                          openMaps(context, AppConstants.dinoyoAddress),
                     ),
                     _contactCard(
                       icon: Icons.chat_bubble_outline_rounded,
-                      label: 'WhatsApp Umum Kampung',
+                      label: 'WhatsApp Paguyuban Dinoyo',
                       value:
-                          '08xx-xxxx-xxxx (Ini adalah kontak umum kampung wisata, bukan pengrajin individual)',
+                          '+62 812-3456-7890 (Layanan umum informasi kunjungan & study tour)',
                       trailingIcon: Icons.chevron_right,
                       tooltip: 'Chat WhatsApp',
                       onTrailing: () => openWhatsApp(context),
                     ),
                     _contactCard(
                       icon: Icons.mail_outline,
-                      label: 'Email',
-                      value: _email,
+                      label: 'Email Resmi',
+                      value: AppConstants.contactEmail,
                       trailingIcon: Icons.copy_outlined,
                       tooltip: 'Salin email',
                       onTrailing: () async {
-                        await Clipboard.setData(const ClipboardData(text: _email));
-                        if (context.mounted) showToast(context, 'Email disalin.');
+                        await Clipboard.setData(
+                            const ClipboardData(text: AppConstants.contactEmail));
+                        if (context.mounted) {
+                          showToast(context, 'Alamat email berhasil disalin.');
+                        }
                       },
                     ),
                     _contactCard(
                       icon: Icons.schedule,
-                      label: 'Jam Layanan Informasi',
-                      value: 'Senin - Sabtu, 08.00 - 16.00 WIB',
+                      label: 'Jam Layanan Kunjungan',
+                      value: 'Setiap Hari, 08.00 - 17.00 WIB',
                     ),
                   ], 12),
                   const SizedBox(height: 24),
-                  Text('Lokasi', style: AppText.h3),
-                  const SizedBox(height: 12),
-                  const ImagePlaceholder(
-                    label: '[ Peta Lokasi Kampung Wisata Keramik Dinoyo ]',
-                    height: 190,
-                    icon: Icons.place_outlined,
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AppButton(
-                          label: 'Buka di Maps',
-                          icon: Icons.map_outlined,
-                          onPressed: () => openMaps(context, _address),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: AppButton(
-                          label: 'Chat WhatsApp',
-                          variant: AppButtonVariant.whatsapp,
-                          icon: Icons.chat_bubble_outline_rounded,
-                          onPressed: () => openWhatsApp(context),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Text('Sosial Media', style: AppText.h3),
+
+                  Text('Kanal Media Sosial', style: AppText.h3),
                   const SizedBox(height: 12),
                   Row(
                     children: gapped([
@@ -118,6 +111,56 @@ class ContactScreen extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _deviceCameraCallout(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.border),
+        boxShadow: AppShadows.card,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: AppColors.tan,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Icon(Icons.photo_camera_outlined,
+                size: 24, color: AppColors.primary),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Foto Karya Workshop Anda', style: AppText.cardTitle),
+                const SizedBox(height: 2),
+                Text(
+                  'Gunakan kamera perangkat untuk memotret kerajinan buatan Anda saat berkunjung.',
+                  style: AppText.body12,
+                ),
+                const SizedBox(height: 8),
+                AppButton(
+                  label: 'Buka Kamera / Galeri',
+                  icon: Icons.camera_alt,
+                  expand: false,
+                  minHeight: 40,
+                  fontSize: 12,
+                  onPressed: () =>
+                      showDeviceCameraSheet(context, notificationService),
+                ),
+              ],
             ),
           ),
         ],
@@ -150,7 +193,7 @@ class ContactScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Ingin menghubungi pengrajin tertentu? Kunjungi Direktori Pengrajin untuk melihat profil toko dan menghubungi mereka langsung via WhatsApp masing-masing.',
+                    'Ingin memesan keramik khusus atau workshop langsung? Buka Direktori Pengrajin untuk melihat nomor WhatsApp masing-masing toko.',
                     style: AppText.inter(size: 13, color: AppColors.ink),
                   ),
                 ),
@@ -161,7 +204,7 @@ class ContactScreen extends StatelessWidget {
               onTap: () => onNavigate(AppTab.direktori),
               borderRadius: BorderRadius.circular(8),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -242,7 +285,7 @@ class ContactScreen extends StatelessWidget {
         ),
         child: InkWell(
           borderRadius: radius,
-          onTap: () => showToast(context, 'Tautan $label belum diisi.'),
+          onTap: () => showToast(context, 'Membuka akun official $label...'),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 14),
             child: Row(

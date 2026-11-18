@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../data/models.dart';
+import '../features/shops/domain/entities/shop.dart';
 import '../theme/app_theme.dart';
 import '../utils/launcher.dart';
 
