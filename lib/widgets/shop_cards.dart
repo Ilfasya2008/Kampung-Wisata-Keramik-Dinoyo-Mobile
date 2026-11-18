@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
-
-import '../data/models.dart';
-import '../screens/shop_profile_screen.dart';
+import '../features/shops/domain/entities/shop.dart';
+import '../features/shops/presentation/views/shop_profile_screen.dart';
+import '../features/shops/presentation/viewmodels/shop_viewmodel.dart';
 import '../theme/app_theme.dart';
 import '../utils/launcher.dart';
 import 'common.dart';
 
-void openShopProfile(BuildContext context, Shop shop) {
+void openShopProfile(BuildContext context, Shop shop, ShopViewModel shopViewModel) {
   Navigator.of(context).push(
-    MaterialPageRoute(builder: (_) => ShopProfileScreen(shop: shop)),
+    MaterialPageRoute(
+      builder: (_) => ShopProfileScreen(
+        shop: shop,
+        shopViewModel: shopViewModel,
+      ),
+    ),
   );
 }
 
-/// Full-width card used on the Direktori list (screen 02).
 class ShopListCard extends StatelessWidget {
-  const ShopListCard({super.key, required this.shop});
   final Shop shop;
+  final ShopViewModel? viewModel;
+  const ShopListCard({super.key, required this.shop, this.viewModel});
 
   Widget _meta(IconData icon, String text) => Row(
         children: [
@@ -45,11 +50,20 @@ class ShopListCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const ImagePlaceholder(
-                label: '[ Foto Toko ]',
-                width: 104,
-                height: 112,
-                radius: 14,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: Image.asset(
+                  shop.imageAsset ?? 'assets/images/product_vas_bunga.jpg',
+                  width: 104,
+                  height: 112,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) => const ImagePlaceholder(
+                    label: '[ Foto Toko ]',
+                    width: 104,
+                    height: 112,
+                    radius: 14,
+                  ),
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -77,7 +91,13 @@ class ShopListCard extends StatelessWidget {
                 child: AppButton(
                   label: 'Lihat Profil Toko',
                   trailingIcon: Icons.arrow_forward,
-                  onPressed: () => openShopProfile(context, shop),
+                  onPressed: () {
+                    if (viewModel != null) {
+                      openShopProfile(context, shop, viewModel!);
+                    } else {
+                      Navigator.of(context).pushNamed('/profile_shop', arguments: shop);
+                    }
+                  },
                 ),
               ),
               const SizedBox(width: 8),
@@ -85,7 +105,7 @@ class ShopListCard extends StatelessWidget {
                 onPressed: () => openWhatsApp(
                   context,
                   phone: shop.whatsapp,
-                  message: 'Halo ${shop.name}, saya ingin bertanya.',
+                  message: 'Halo ${shop.name}, saya ingin bertanya seputar keramik.',
                 ),
               ),
             ],
@@ -96,10 +116,10 @@ class ShopListCard extends StatelessWidget {
   }
 }
 
-/// 250px wide card used in the horizontal "Direktori" preview on Beranda.
 class ShopPreviewCard extends StatelessWidget {
-  const ShopPreviewCard({super.key, required this.shop});
   final Shop shop;
+  final VoidCallback? onTap;
+  const ShopPreviewCard({super.key, required this.shop, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -109,15 +129,22 @@ class ShopPreviewCard extends StatelessWidget {
         color: AppColors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: AppShadows.card,
+        border: Border.all(color: AppColors.border),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const ImagePlaceholder(
-            label: '[ Foto Toko / Workshop ]',
+          Image.asset(
+            shop.imageAsset ?? 'assets/images/hero_dinoyo.jpg',
             height: 130,
-            radius: 0,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            errorBuilder: (_, _, _) => const ImagePlaceholder(
+              label: '[ Foto Toko / Workshop ]',
+              height: 130,
+              radius: 0,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(14),
@@ -139,7 +166,7 @@ class ShopPreviewCard extends StatelessWidget {
                         label: 'Lihat Profil',
                         variant: AppButtonVariant.outline,
                         fontSize: 12,
-                        onPressed: () => openShopProfile(context, shop),
+                        onPressed: onTap,
                       ),
                     ),
                     const SizedBox(width: 8),

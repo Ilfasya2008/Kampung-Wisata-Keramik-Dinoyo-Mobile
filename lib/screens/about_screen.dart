@@ -52,10 +52,19 @@ class _AboutScreenState extends State<AboutScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const ImagePlaceholder(
-              label: '[ Foto Paguyuban Pengrajin Keramik Dinoyo ]',
-              height: 200,
-              radius: 20,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
+                'assets/images/paguyuban_banner.jpg',
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => const ImagePlaceholder(
+                  label: '[ Foto Paguyuban Pengrajin Keramik Dinoyo ]',
+                  height: 200,
+                  radius: 20,
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             const PillChip('Paguyuban pengrajin keramik Dinoyo'),
@@ -134,8 +143,17 @@ class _AboutScreenState extends State<AboutScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const ImagePlaceholder(
-                label: '[ Foto Sejarah Kampung Keramik Dinoyo ]', height: 180),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                'assets/images/history_golden.jpg',
+                height: 180,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => const ImagePlaceholder(
+                    label: '[ Foto Sejarah Kampung Keramik Dinoyo ]', height: 180),
+              ),
+            ),
             const SizedBox(height: 16),
             Text('Sejarah Kampung Keramik Dinoyo', style: AppText.h3),
             const SizedBox(height: 10),
@@ -198,8 +216,17 @@ class _AboutScreenState extends State<AboutScreen> {
               style: AppText.body13,
             ),
             const SizedBox(height: 14),
-            const ImagePlaceholder(
-                label: '[ Foto Kegiatan Paguyuban Pengrajin ]', height: 170),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                'assets/images/workshop_action.jpg',
+                height: 170,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => const ImagePlaceholder(
+                    label: '[ Foto Kegiatan Paguyuban Pengrajin ]', height: 170),
+              ),
+            ),
           ],
         ),
       );
