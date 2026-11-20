@@ -117,3 +117,29 @@ class HistoryEra {
   final String description;
   final String imageLabel;
 }
+
+enum LoginRole { admin, artisan }
+
+/// Akun yang boleh masuk ke Panel Pengelolaan Data.
+class AppAccount {
+  const AppAccount({
+    required this.username,
+    required this.email,
+    required this.password,
+    required this.role,
+    required this.displayName,
+    this.shopId,
+  });
+
+  final String username;
+  final String email;
+
+  /// Disimpan polos karena hanya data dummy. Backend sungguhan wajib
+  /// menyimpan hash, bukan kata sandi asli.
+  final String password;
+  final LoginRole role;
+  final String displayName;
+
+  /// Toko milik pengrajin (null untuk admin paguyuban).
+  final String? shopId;
+}

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../data/auth_service.dart';
+import '../data/models.dart';
 import '../theme/app_theme.dart';
 import '../utils/launcher.dart';
 import '../widgets/common.dart';
 import '../widgets/form_fields.dart';
 
-enum LoginRole { admin, artisan }
-
 /// Screen 08 - CRUD Login.
-/// NOTE: this is UI only. Replace [_submit] with real authentication.
+/// Akun diperiksa oleh [AuthService] (saat ini akun dummy lokal).
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -23,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   LoginRole _role = LoginRole.admin;
   bool _showPassword = false;
   bool _remember = true;
+  bool _submitting = false;
 
   @override
   void dispose() {
@@ -31,9 +32,21 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _submit() {
-    if (!_formKey.currentState!.validate()) return;
-    // TODO: authenticate against your backend, using _role / _email / _password.
+  Future<void> _submit() async {
+    if (_submitting || !_formKey.currentState!.validate()) return;
+    setState(() => _submitting = true);
+    final result = await AuthService.instance.login(
+      role: _role,
+      identifier: _email.text,
+      password: _password.text,
+    );
+    if (!mounted) return;
+    setState(() => _submitting = false);
+
+    if (!result.isSuccess) {
+      showToast(context, result.error!);
+      return;
+    }
     Navigator.of(context).pushReplacementNamed('/admin');
   }
 
@@ -232,7 +245,12 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
           const SizedBox(height: 8),
-          AppButton(label: 'Masuk', fontSize: 14, minHeight: 52, onPressed: _submit),
+          AppButton(
+            label: _submitting ? 'Memeriksa...' : 'Masuk',
+            fontSize: 14,
+            minHeight: 52,
+            onPressed: _submitting ? null : _submit,
+          ),
           const SizedBox(height: 16),
           Center(
             child: Text(

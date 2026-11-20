@@ -15,7 +15,13 @@ Aplikasi mobile resmi untuk **Kampung Wisata Keramik Dinoyo**, Kota Malang. Diba
 - **Kontak & Navigasi**: Integrasi WhatsApp resmi, Google Maps lokasi pengrajin, dan kontak paguyuban.
 - **User Persona**: Halaman khusus profil target pengguna (persona Robbi).
 
-### 2. Panel Admin & Manajemen (CRUD)
+### 2. Rekomendasi Cerdas (Machine Learning)
+- **Rekomendasi Toko**: pengunjung menulis kebutuhan dengan bahasa bebas (mis. *"ingin ikut workshop gerabah bersama rombongan sekolah"*), lalu model mengurutkan toko paling relevan beserta skor kecocokan dan alasannya.
+- **Toko Serupa**: di setiap Profil Toko ditampilkan toko lain yang paling mirip.
+- **Model**: Content-Based Filtering dengan TF-IDF + Cosine Similarity, ditulis dalam Dart murni dan berjalan *on-device* (folder `lib/ml/`).
+- Penjelasan lengkap, data, evaluasi, dan screenshot ada di [docs/LAPORAN_MACHINE_LEARNING.md](docs/LAPORAN_MACHINE_LEARNING.md).
+
+### 3. Panel Admin & Manajemen (CRUD)
 - **Login Admin**: Halaman autentikasi khusus pengelola paguyuban.
 - **Dashboard Admin**: Ringkasan data pengrajin, status aktif/nonaktif, pencarian, dan filtering toko.
 - **Form Tambah / Edit Toko**: Form manajemen toko lengkap dengan validasi input, jam buka, workshop, dan foto.
