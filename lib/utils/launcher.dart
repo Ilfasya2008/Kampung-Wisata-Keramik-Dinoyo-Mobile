@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// TODO: put the village's general WhatsApp number here (digits only, with
-/// country code), e.g. '6281234567890'. The Figma design only has the
-/// placeholder "08xx-xxxx-xxxx".
-const String kVillageWhatsApp = '';
+/// Nomor WhatsApp umum kampung wisata. Diisi saat build/run, misalnya:
+///   flutter run --dart-define=VILLAGE_WHATSAPP=6281234567890
+/// Format 08xx juga diterima (otomatis diubah ke 62xx). Bila kosong, tombol
+/// WhatsApp menampilkan pesan "Nomor WhatsApp belum diisi."
+const String kVillageWhatsApp = String.fromEnvironment('VILLAGE_WHATSAPP');
 
 String? _normalizePhone(String raw) {
   if (raw.toLowerCase().contains('x')) return null; // still a placeholder

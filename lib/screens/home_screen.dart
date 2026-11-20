@@ -4,6 +4,7 @@ import '../data/dummy_data.dart';
 import '../theme/app_theme.dart';
 import '../utils/launcher.dart';
 import '../widgets/common.dart';
+import '../widgets/recommendation_cards.dart';
 import '../widgets/shop_cards.dart';
 import 'main_shell.dart';
 
@@ -43,6 +44,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   _search(),
                   _hero(),
                   _quickMenu(),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(20, 8, 20, 0),
+                    child: SmartRecommendationBanner(),
+                  ),
                   _about(),
                   _usp(),
                   _timelinePreview(),

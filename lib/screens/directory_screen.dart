@@ -4,6 +4,7 @@ import '../data/dummy_data.dart';
 import '../data/models.dart';
 import '../theme/app_theme.dart';
 import '../widgets/common.dart';
+import '../widgets/recommendation_cards.dart';
 import '../widgets/shop_cards.dart';
 
 /// Screen 02 - Direktori Pengrajin.
@@ -76,6 +77,10 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
                       ),
                     ],
                   ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(20, 8, 20, 4),
+                  child: SmartRecommendationBanner(),
                 ),
                 _searchBar(),
                 _categoryChips(),

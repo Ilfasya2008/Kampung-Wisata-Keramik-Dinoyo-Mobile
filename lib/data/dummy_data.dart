@@ -11,6 +11,8 @@ const List<String> kCategories = [
   'Workshop Edukasi',
 ];
 
+/// Data toko. Teks `about` dan katalog produk di [shopProducts] juga dipakai
+/// sebagai korpus oleh model rekomendasi (lib/ml/shop_recommender.dart).
 const List<Shop> dummyShops = [
   Shop(
     id: 'sari-asih',
@@ -22,7 +24,7 @@ const List<Shop> dummyShops = [
     categoryKeys: ['Semi-Porselen', 'Workshop Edukasi'],
     established: '1962',
     about:
-        'Deskripsi profil pengrajin: sejarah singkat toko, filosofi karya, dan keahlian khusus yang menjadi ciri khas. Bagian ini menampilkan kisah personal pengrajin agar pengunjung merasa terhubung sebelum menghubungi langsung via WhatsApp.',
+        'Toko keluarga yang berdiri sejak 1962 dan dikenal dengan vas serta guci semi-porselen bermotif ukir bunga khas Jawa. Pengunjung dan rombongan sekolah bisa langsung ikut workshop membentuk tanah liat, melukis motif, hingga proses glasir bersama pengrajin.',
   ),
   Shop(
     id: 'galeri-porselen',
@@ -32,6 +34,8 @@ const List<Shop> dummyShops = [
     hours: '09.00-17.00 WIB',
     workshop: WorkshopStatus.reservasi,
     categoryKeys: ['Semi-Porselen', 'Galeri Suvenir', 'Workshop Edukasi'],
+    about:
+        'Galeri yang memajang porselen halus berkualitas ekspor: set cangkir teh, piring hias, dan vas putih tipis berglasir mengilap. Cocok untuk hadiah, koleksi, dan cendera mata premium. Kelas melukis porselen tersedia dengan reservasi minimal sehari sebelumnya.',
   ),
   Shop(
     id: 'ibu-sri',
@@ -41,6 +45,8 @@ const List<Shop> dummyShops = [
     hours: '08.00-15.00 WIB',
     workshop: WorkshopStatus.tersedia,
     categoryKeys: ['Gerabah', 'Workshop Edukasi'],
+    about:
+        'Sanggar gerabah tradisional dari tanah liat merah yang dibentuk dengan teknik meja putar dan pijat. Ibu Sri rutin membuka kelas belajar membuat gerabah untuk anak sekolah, mahasiswa, dan wisatawan dengan harga terjangkau.',
   ),
   Shop(
     id: 'tiga-putra',
@@ -50,6 +56,8 @@ const List<Shop> dummyShops = [
     hours: '09.00-16.00 WIB',
     workshop: WorkshopStatus.tidakTersedia,
     categoryKeys: ['Semi-Porselen', 'Gerabah'],
+    about:
+        'Produsen keramik dalam jumlah besar untuk kebutuhan hotel, restoran, dan kafe: piring, mangkuk, dan cangkir. Menerima pesanan custom logo serta pembelian grosir dengan harga pabrik.',
   ),
   Shop(
     id: 'rumah-kriya',
@@ -59,6 +67,8 @@ const List<Shop> dummyShops = [
     hours: '10.00-17.00 WIB',
     workshop: WorkshopStatus.tersedia,
     categoryKeys: ['Galeri Suvenir', 'Workshop Edukasi'],
+    about:
+        'Studio keramik hias kontemporer: patung mini, hiasan dinding, dan lampu keramik untuk dekorasi interior rumah. Menyediakan workshop kreatif untuk komunitas dan keluarga.',
     active: false,
   ),
   Shop(
@@ -69,9 +79,12 @@ const List<Shop> dummyShops = [
     hours: '08.00-18.00 WIB',
     workshop: WorkshopStatus.tidakTersedia,
     categoryKeys: ['Galeri Suvenir'],
+    about:
+        'Pusat oleh-oleh khas Malang berupa suvenir keramik murah: gantungan kunci, magnet kulkas, asbak mini, dan miniatur Tugu Malang. Melayani pesanan suvenir pernikahan dan cendera mata acara kantor dalam jumlah banyak.',
   ),
 ];
 
+/// Katalog default (dipakai bila toko belum punya katalog sendiri).
 const List<Product> dummyProducts = [
   Product(
     name: 'Vas Bunga Ukir Klasik',
@@ -91,6 +104,125 @@ const List<Product> dummyProducts = [
     price: 'Rp 450.000',
   ),
 ];
+
+/// Katalog produk per toko (key = [Shop.id]).
+const Map<String, List<Product>> shopProducts = {
+  'sari-asih': [
+    Product(
+      name: 'Vas Bunga Ukir Klasik',
+      description: 'Motif ukir bunga tradisional Jawa, tinggi 30cm',
+      category: 'Semi-Porselen',
+      price: 'Rp 150.000',
+    ),
+    Product(
+      name: 'Guci Motif Batik Malangan',
+      description: 'Guci semi-porselen dengan lukisan batik khas Malang',
+      category: 'Semi-Porselen',
+      price: 'Rp 275.000',
+    ),
+    Product(
+      name: 'Paket Workshop Melukis Keramik',
+      description: 'Sesi 2 jam melukis dan mengglasir keramik sendiri',
+      category: 'Workshop',
+      price: 'Rp 50.000',
+    ),
+  ],
+  'galeri-porselen': [
+    Product(
+      name: 'Set Cangkir Teh Dinoyo',
+      description: 'Set 4 cangkir porselen dengan motif khas Dinoyo',
+      category: 'Porselen',
+    ),
+    Product(
+      name: 'Piring Hias Lukis Tangan',
+      description: 'Piring porselen pajangan dinding, dilukis tangan',
+      category: 'Porselen',
+      price: 'Rp 200.000',
+    ),
+    Product(
+      name: 'Vas Porselen Putih Mini',
+      description: 'Vas porselen tipis untuk hadiah dan koleksi',
+      category: 'Porselen',
+      price: 'Rp 95.000',
+    ),
+  ],
+  'ibu-sri': [
+    Product(
+      name: 'Kendi Gerabah Tanah Liat',
+      description: 'Kendi air tradisional dari tanah liat merah',
+      category: 'Gerabah',
+      price: 'Rp 35.000',
+    ),
+    Product(
+      name: 'Pot Tanaman Gerabah',
+      description: 'Pot gerabah untuk tanaman hias, berbagai ukuran',
+      category: 'Gerabah',
+      price: 'Rp 25.000',
+    ),
+    Product(
+      name: 'Celengan Gerabah',
+      description: 'Celengan bentuk hewan, cocok untuk anak-anak',
+      category: 'Gerabah',
+      price: 'Rp 15.000',
+    ),
+  ],
+  'tiga-putra': [
+    Product(
+      name: 'Set Piring Makan Restoran',
+      description: 'Piring semi-porselen tahan panas untuk restoran dan hotel',
+      category: 'Semi-Porselen',
+    ),
+    Product(
+      name: 'Mangkuk Saji Gerabah',
+      description: 'Mangkuk saji gerabah untuk kafe dan rumah makan',
+      category: 'Gerabah',
+      price: 'Rp 30.000',
+    ),
+    Product(
+      name: 'Cangkir Kopi Custom Logo',
+      description: 'Cangkir kopi dengan cetak logo usaha, pesanan grosir',
+      category: 'Semi-Porselen',
+    ),
+  ],
+  'rumah-kriya': [
+    Product(
+      name: 'Lampu Meja Keramik',
+      description: 'Lampu hias keramik berlubang untuk dekorasi interior',
+      category: 'Keramik Hias',
+      price: 'Rp 320.000',
+    ),
+    Product(
+      name: 'Hiasan Dinding Relief',
+      description: 'Panel relief keramik bermotif flora',
+      category: 'Keramik Hias',
+      price: 'Rp 180.000',
+    ),
+  ],
+  'melati': [
+    Product(
+      name: 'Gantungan Kunci Keramik',
+      description: 'Oleh-oleh mini bermotif ikon Kota Malang',
+      category: 'Suvenir',
+      price: 'Rp 5.000',
+    ),
+    Product(
+      name: 'Magnet Kulkas Ikon Malang',
+      description: 'Suvenir magnet keramik bergambar Tugu Malang',
+      category: 'Suvenir',
+      price: 'Rp 10.000',
+    ),
+    Product(
+      name: 'Suvenir Pernikahan Vas Mini',
+      description: 'Vas mini untuk suvenir pernikahan, minimal 100 pcs',
+      category: 'Suvenir',
+      price: 'Rp 7.500',
+    ),
+  ],
+};
+
+/// Katalog milik [shopId], atau katalog default bila belum diisi.
+List<Product> productsOf(String shopId) =>
+    shopProducts[shopId] ?? dummyProducts;
 
 const List<HistoryEra> historyEras = [
   HistoryEra(
@@ -132,5 +264,24 @@ const List<HistoryEra> historyEras = [
     description:
         'Kampung Dinoyo berkembang menjadi kawasan wisata edukasi dan direktori pengrajin keramik yang hidup. Pengunjung dapat menyusuri sejarah, melihat proses pembuatan, dan berinteraksi langsung dengan karya asli pengrajin.',
     imageLabel: '[ Foto Arsip - Sentra Wisata Edukasi ]',
+  ),
+];
+
+/// Akun demo untuk layar Login. Ganti dengan data dari backend.
+const List<AppAccount> dummyAccounts = [
+  AppAccount(
+    username: 'admin',
+    email: 'admin@dinoyo.id',
+    password: 'admin123',
+    role: LoginRole.admin,
+    displayName: 'Admin Paguyuban',
+  ),
+  AppAccount(
+    username: 'sariasih',
+    email: 'sariasih@dinoyo.id',
+    password: 'pengrajin123',
+    role: LoginRole.artisan,
+    displayName: 'Toko Keramik Sari Asih',
+    shopId: 'sari-asih',
   ),
 ];

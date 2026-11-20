@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../data/dummy_data.dart';
 import '../data/models.dart';
+import '../ml/shop_recommender.dart';
 import '../theme/app_theme.dart';
 import '../utils/launcher.dart';
 import '../widgets/common.dart';
+import '../widgets/recommendation_cards.dart';
 
 /// Screen 04 - Profil Toko.
 class ShopProfileScreen extends StatefulWidget {
@@ -47,8 +49,9 @@ class _ShopProfileScreenState extends State<ShopProfileScreen> {
                   _tabBar(),
                   _section(_keys[0], _about(shop)),
                   _section(_keys[1], _gallery()),
-                  _section(_keys[2], _catalog()),
+                  _section(_keys[2], _catalog(productsOf(shop.id))),
                   _section(_keys[3], _visitInfo(shop)),
+                  _similarShops(shop),
                   const SizedBox(height: 16),
                 ],
               ),
@@ -312,7 +315,7 @@ class _ShopProfileScreenState extends State<ShopProfileScreen> {
     );
   }
 
-  Widget _catalog() {
+  Widget _catalog(List<Product> products) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
       child: Column(
@@ -325,7 +328,7 @@ class _ShopProfileScreenState extends State<ShopProfileScreen> {
                     style: AppText.inter(
                         size: 18, weight: FontWeight.w700, height: 1.22)),
               ),
-              Text('${dummyProducts.length} produk', style: AppText.body12),
+              Text('${products.length} produk', style: AppText.body12),
             ],
           ),
           const SizedBox(height: 12),
@@ -336,7 +339,7 @@ class _ShopProfileScreenState extends State<ShopProfileScreen> {
                 spacing: 12,
                 runSpacing: 12,
                 children: [
-                  for (final p in dummyProducts)
+                  for (final p in products)
                     SizedBox(width: w, child: _productCard(p)),
                 ],
               );
@@ -394,6 +397,51 @@ class _ShopProfileScreenState extends State<ShopProfileScreen> {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// "Toko Serupa" - item-to-item recommendation dari model TF-IDF.
+  Widget _similarShops(Shop shop) {
+    final similar = ShopRecommender.instance.similarTo(shop);
+    if (similar.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 28),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionHeader(
+            title: 'Toko Serupa',
+            fontSize: 18,
+            padding: EdgeInsets.symmetric(horizontal: 20),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 2, 20, 10),
+            child: Row(
+              children: [
+                const Icon(Icons.auto_awesome,
+                    size: 13, color: AppColors.primary),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text('Direkomendasikan oleh model berdasarkan kemiripan profil & katalog',
+                      style: AppText.body12),
+                ),
+              ],
+            ),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: gapped([
+                  for (final r in similar) SimilarShopCard(recommendation: r),
+                ], 12, horizontal: true),
+              ),
             ),
           ),
         ],
